@@ -1,14 +1,30 @@
-// Update this page (the content is just a fallback if you fail to update the page)
 
-const Index = () => {
+import { ExpenseProvider } from "@/context/ExpenseContext";
+import Layout from "@/components/Layout";
+import DashboardSummary from "@/components/DashboardSummary";
+import ExpenseFilters from "@/components/ExpenseFilters";
+import ExpenseList from "@/components/ExpenseList";
+
+export default function Dashboard() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-gray-600">Start building your amazing project here!</p>
-      </div>
-    </div>
-  );
-};
+    <ExpenseProvider>
+      <Layout>
+        <div className="space-y-8">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
+            <p className="text-muted-foreground mt-1">
+              Track and manage your expenses
+            </p>
+          </div>
 
-export default Index;
+          <DashboardSummary />
+          
+          <div>
+            <ExpenseFilters />
+            <ExpenseList />
+          </div>
+        </div>
+      </Layout>
+    </ExpenseProvider>
+  );
+}
