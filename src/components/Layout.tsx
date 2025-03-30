@@ -1,6 +1,6 @@
 
 import { ReactNode } from "react";
-import { CircleDollarSign, Home, PieChart, ListFilter } from "lucide-react";
+import { CircleDollarSign, Home, PieChart, Users } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
@@ -26,6 +26,11 @@ export default function Layout({ children }: LayoutProps) {
       title: "Reports",
       href: "/reports",
       icon: <PieChart className="h-5 w-5" />,
+    },
+    {
+      title: "Accountants",
+      href: "/accountants",
+      icon: <Users className="h-5 w-5" />,
     },
   ];
 
@@ -59,7 +64,7 @@ export default function Layout({ children }: LayoutProps) {
 
       {/* Mobile navbar */}
       <div className="fixed bottom-0 left-0 z-50 w-full h-16 bg-white border-t border-gray-200 md:hidden">
-        <div className="grid h-full grid-cols-3">
+        <div className="grid h-full grid-cols-4">
           {mainNavItems.map((item) => (
             <Link
               key={item.href}

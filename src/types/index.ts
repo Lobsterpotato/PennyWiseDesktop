@@ -37,3 +37,26 @@ export type ExpenseFilters = {
   maxAmount?: number;
   searchQuery?: string;
 };
+
+export type Accountant = {
+  id: string;
+  name: string;
+  photo: string;
+  description: string;
+  specialties: string[];
+  experience: number;
+  hourlyRate: number;
+  contactEmail: string;
+  contactPhone: string;
+  rating: number;
+  reviewCount: number;
+};
+
+export type Review = {
+  id: string;
+  accountantId: string;
+  reviewerName: string;
+  rating: number;
+  comment: string;
+  date: Date;
+};
