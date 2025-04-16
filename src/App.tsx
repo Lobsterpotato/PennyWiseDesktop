@@ -10,12 +10,16 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { AuthProvider } from "@/context/AuthContext";
 import Index from "./pages/Index";
 import AddExpense from "./pages/AddExpense";
 import Reports from "./pages/Reports";
 import Accountants from "./pages/Accountants";
 import NotFound from "./pages/NotFound";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 // Create a new React Query client for data fetching
 const queryClient = new QueryClient();
@@ -30,15 +34,22 @@ const App = () => (
       <Sonner />
       {/* BrowserRouter sets up client-side routing */}
       <BrowserRouter>
-        <Routes>
-          {/* Main application routes */}
-          <Route path="/" element={<Index />} />
-          <Route path="/add" element={<AddExpense />} />
-          <Route path="/reports" element={<Reports />} />
-          <Route path="/accountants" element={<Accountants />} />
-          {/* Catch-all route for 404 errors */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <AuthProvider>
+          <Routes>
+            {/* Authentication routes */}
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            
+            {/* Protected routes */}
+            <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
+            <Route path="/add" element={<ProtectedRoute><AddExpense /></ProtectedRoute>} />
+            <Route path="/reports" element={<ProtectedRoute><Reports /></ProtectedRoute>} />
+            <Route path="/accountants" element={<ProtectedRoute><Accountants /></ProtectedRoute>} />
+            
+            {/* Catch-all route for 404 errors */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

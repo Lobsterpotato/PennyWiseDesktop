@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { ExpenseProvider } from "@/context/ExpenseContext";
 import Layout from "@/components/Layout";
@@ -59,7 +58,7 @@ function ReportsTabs() {
     amount: number;
   }
   
-  const yearlyData = monthlyData.reduce((acc: Record<string, YearlyDataItem>, item) => {
+  const yearlyData = monthlyData.reduce<Record<string, YearlyDataItem>>((acc, item) => {
     const [year] = item.month.split('-');
     const yearKey = year;
     
@@ -72,7 +71,7 @@ function ReportsTabs() {
   }, {});
   
   const yearlyChartData = Object.values(yearlyData).map(item => ({
-    name: `${item.year}`,
+    name: item.year,
     amount: item.amount
   }));
   

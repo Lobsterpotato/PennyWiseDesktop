@@ -7,9 +7,19 @@
 // - Tailwind CSS for styling and responsive design
 
 import { ReactNode } from "react";
-import { CircleDollarSign, Home, PieChart, Users } from "lucide-react";
+import { CircleDollarSign, Home, PieChart, Users, LogOut, User } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/context/AuthContext";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
 
 interface LayoutProps {
   children: ReactNode;
@@ -18,6 +28,7 @@ interface LayoutProps {
 export default function Layout({ children }: LayoutProps) {
   // Get current route to highlight active navigation items
   const location = useLocation();
+  const { user, logout } = useAuth();
   
   // Navigation items used in both sidebar and mobile navigation
   const mainNavItems = [
@@ -52,7 +63,7 @@ export default function Layout({ children }: LayoutProps) {
           <span className="font-bold text-lg">ExpenseTracker</span>
         </div>
         
-        <nav className="space-y-1">
+        <nav className="space-y-1 flex-1">
           {mainNavItems.map((item) => (
             <Link
               key={item.href}
@@ -69,6 +80,28 @@ export default function Layout({ children }: LayoutProps) {
             </Link>
           ))}
         </nav>
+        
+        {/* User profile section */}
+        <div className="mt-auto pt-4 border-t border-sidebar-border">
+          {user && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="w-full justify-start px-3 py-2 text-sidebar-foreground hover:bg-sidebar-accent">
+                  <User className="h-5 w-5 mr-2" />
+                  <span className="text-sm font-medium">{user.name}</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={logout}>
+                  <LogOut className="h-4 w-4 mr-2" />
+                  <span>Logout</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
+        </div>
       </div>
 
       {/* Mobile bottom navigation - visible only on mobile */}
@@ -94,6 +127,24 @@ export default function Layout({ children }: LayoutProps) {
 
       {/* Main content area */}
       <div className="flex-1 overflow-y-auto pb-16 md:pb-0">
+        <div className="flex justify-end items-center p-4 border-b md:hidden">
+          {user && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm">
+                  <User className="h-4 w-4 mr-2" />
+                  {user.name}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={logout}>
+                  <LogOut className="h-4 w-4 mr-2" />
+                  <span>Logout</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
+        </div>
         <main className="container max-w-screen-xl mx-auto py-6 px-4 md:px-6 lg:px-8">
           {children}
         </main>
