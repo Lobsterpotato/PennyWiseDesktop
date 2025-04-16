@@ -7,7 +7,7 @@
 // - Tailwind CSS for styling and responsive design
 
 import { ReactNode } from "react";
-import { CircleDollarSign, Home, PieChart, Users, LogOut, User } from "lucide-react";
+import { CircleDollarSign, Home, PieChart, Users, LogOut, User, Shield } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/context/AuthContext";
@@ -29,6 +29,10 @@ export default function Layout({ children }: LayoutProps) {
   // Get current route to highlight active navigation items
   const location = useLocation();
   const { user, logout } = useAuth();
+  
+  // Check if current user is admin - this would be implementation-specific
+  // In this mock version, we're just checking if the email contains 'admin'
+  const isAdmin = user?.email.includes("admin");
   
   // Navigation items used in both sidebar and mobile navigation
   const mainNavItems = [
@@ -54,6 +58,18 @@ export default function Layout({ children }: LayoutProps) {
     },
   ];
 
+  // Add admin panel to navigation if user is admin
+  const navItems = isAdmin
+    ? [
+        ...mainNavItems,
+        {
+          title: "Admin Panel",
+          href: "/admin",
+          icon: <Shield className="h-5 w-5" />,
+        },
+      ]
+    : mainNavItems;
+
   return (
     <div className="flex min-h-screen">
       {/* Desktop Sidebar - hidden on mobile */}
@@ -64,7 +80,7 @@ export default function Layout({ children }: LayoutProps) {
         </div>
         
         <nav className="space-y-1 flex-1">
-          {mainNavItems.map((item) => (
+          {navItems.map((item) => (
             <Link
               key={item.href}
               to={item.href}
@@ -106,8 +122,8 @@ export default function Layout({ children }: LayoutProps) {
 
       {/* Mobile bottom navigation - visible only on mobile */}
       <div className="fixed bottom-0 left-0 z-50 w-full h-16 bg-white border-t border-gray-200 md:hidden">
-        <div className="grid h-full grid-cols-4">
-          {mainNavItems.map((item) => (
+        <div className={`grid h-full ${isAdmin ? 'grid-cols-5' : 'grid-cols-4'}`}>
+          {navItems.map((item) => (
             <Link
               key={item.href}
               to={item.href}

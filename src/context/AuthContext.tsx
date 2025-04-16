@@ -8,6 +8,7 @@ type User = {
   id: string;
   email: string;
   name: string;
+  role?: string;
 };
 
 // Define auth context shape
@@ -56,7 +57,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       
       // Simple validation (in real app, this would be server-side)
       if (email === "demo@example.com" && password === "password") {
-        const newUser = { id: "user-1", email, name: "Demo User" };
+        const newUser = { id: "user-1", email, name: "Demo User", role: "user" };
         setUser(newUser);
         localStorage.setItem(STORAGE_KEY, JSON.stringify(newUser));
         toast({
@@ -64,10 +65,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           description: `Welcome back, ${newUser.name}!`,
         });
         navigate("/");
+      } else if (email === "admin@example.com" && password === "admin") {
+        const adminUser = { id: "admin-1", email, name: "Admin User", role: "admin" };
+        setUser(adminUser);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(adminUser));
+        toast({
+          title: "Admin login successful",
+          description: `Welcome back, ${adminUser.name}!`,
+        });
+        navigate("/");
       } else {
         toast({
           title: "Login failed",
-          description: "Invalid email or password. Try demo@example.com / password",
+          description: "Invalid email or password. Try demo@example.com / password or admin@example.com / admin",
           variant: "destructive",
         });
       }
@@ -92,7 +102,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       await new Promise((resolve) => setTimeout(resolve, 1000));
       
       // In a real app, this would create a user in the database
-      const newUser = { id: `user-${Date.now()}`, email, name };
+      const newUser = { id: `user-${Date.now()}`, email, name, role: "user" };
       setUser(newUser);
       localStorage.setItem(STORAGE_KEY, JSON.stringify(newUser));
       

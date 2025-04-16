@@ -78,9 +78,15 @@ export default function Login() {
                 "Sign In"
               )}
             </Button>
-            <div className="text-center text-sm text-muted-foreground mt-2">
-              <span>Demo credentials: </span>
-              <span className="font-semibold">demo@example.com / password</span>
+            <div className="text-center text-sm text-muted-foreground mt-2 space-y-1">
+              <div>
+                <span>User demo: </span>
+                <span className="font-semibold">demo@example.com / password</span>
+              </div>
+              <div>
+                <span>Admin demo: </span>
+                <span className="font-semibold">admin@example.com / admin</span>
+              </div>
             </div>
           </form>
         </CardContent>

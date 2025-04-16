@@ -19,6 +19,7 @@ import Accountants from "./pages/Accountants";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import AdminPanel from "./pages/AdminPanel";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 // Create a new React Query client for data fetching
@@ -45,6 +46,7 @@ const App = () => (
             <Route path="/add" element={<ProtectedRoute><AddExpense /></ProtectedRoute>} />
             <Route path="/reports" element={<ProtectedRoute><Reports /></ProtectedRoute>} />
             <Route path="/accountants" element={<ProtectedRoute><Accountants /></ProtectedRoute>} />
+            <Route path="/admin" element={<ProtectedRoute><AdminPanel /></ProtectedRoute>} />
             
             {/* Catch-all route for 404 errors */}
             <Route path="*" element={<NotFound />} />
