@@ -9,7 +9,8 @@
 
 import React, { createContext, useContext, useState, ReactNode, useEffect } from "react";
 import { Expense, ExpenseCategory, ExpenseFilters } from "@/types";
-import { dummyExpenses } from "@/data/dummy-data";
+// Removing import of dummy data
+// import { dummyExpenses } from "@/data/dummy-data";
 import { filterExpenses } from "@/lib/expense-utils";
 import { useToast } from "@/hooks/use-toast";
 
@@ -29,9 +30,9 @@ interface ExpenseContextType {
 const ExpenseContext = createContext<ExpenseContextType | undefined>(undefined);
 
 export const ExpenseProvider = ({ children }: { children: ReactNode }) => {
-  // Initialize with dummy data for demo purposes
-  const [expenses, setExpenses] = useState<Expense[]>(dummyExpenses);
-  const [filteredExpenses, setFilteredExpenses] = useState<Expense[]>(dummyExpenses);
+  // Initialize with empty array instead of dummy data
+  const [expenses, setExpenses] = useState<Expense[]>([]);
+  const [filteredExpenses, setFilteredExpenses] = useState<Expense[]>([]);
   const [filters, setFilters] = useState<ExpenseFilters>({});
   const { toast } = useToast();
 

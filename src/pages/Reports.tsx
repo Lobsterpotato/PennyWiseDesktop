@@ -53,9 +53,14 @@ function ReportsTabs() {
     };
   });
   
-  // Create yearly data by aggregating months
-  const yearlyData = monthlyData.reduce((acc, item) => {
-    const [year, month] = item.month.split('-');
+  // Create yearly data by aggregating months with proper typing
+  interface YearlyDataItem {
+    year: string;
+    amount: number;
+  }
+  
+  const yearlyData = monthlyData.reduce((acc: Record<string, YearlyDataItem>, item) => {
+    const [year] = item.month.split('-');
     const yearKey = year;
     
     if (!acc[yearKey]) {
@@ -64,7 +69,7 @@ function ReportsTabs() {
     
     acc[yearKey].amount += item.amount;
     return acc;
-  }, {} as Record<string, { year: string, amount: number }>);
+  }, {});
   
   const yearlyChartData = Object.values(yearlyData).map(item => ({
     name: `${item.year}`,
