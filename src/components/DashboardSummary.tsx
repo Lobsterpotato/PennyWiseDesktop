@@ -1,4 +1,12 @@
 
+// Dashboard Summary Component
+// Provides visual overview of expense data with charts and statistics
+// Technologies used:
+// - Recharts for data visualization (charts)
+// - Shadcn UI components for cards and tabs
+// - React hooks for state management
+// - Custom utility functions for data processing
+
 import { useMemo } from "react";
 import { useExpenses } from "@/context/ExpenseContext";
 import { formatCurrency, getExpensesByCategory, getMonthlyTotals, calculateTotalExpenses } from "@/lib/expense-utils";
@@ -9,14 +17,18 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ArrowDownIcon, ArrowUpIcon, DollarSign, Calendar, PieChart as PieChartIcon, BarChart3 } from "lucide-react";
 
 export default function DashboardSummary() {
+  // Access expense data from context
   const { expenses, filteredExpenses } = useExpenses();
 
+  // Calculate summary metrics with memoization for performance
   const totalExpenses = useMemo(() => calculateTotalExpenses(filteredExpenses), [filteredExpenses]);
   const averageExpense = useMemo(() => filteredExpenses.length > 0 ? totalExpenses / filteredExpenses.length : 0, [filteredExpenses, totalExpenses]);
   
+  // Prepare data for charts
   const categoryData = useMemo(() => getExpensesByCategory(filteredExpenses), [filteredExpenses]);
   const monthlyData = useMemo(() => getMonthlyTotals(filteredExpenses), [filteredExpenses]);
   
+  // Calculate trend metrics (last month vs previous month)
   const recentExpenseTotal = useMemo(() => {
     const lastMonth = new Date();
     lastMonth.setMonth(lastMonth.getMonth() - 1);
@@ -38,6 +50,7 @@ export default function DashboardSummary() {
       .reduce((sum, expense) => sum + expense.amount, 0);
   }, [expenses]);
 
+  // Calculate percentage change for trend indicator
   const percentChange = previousExpenseTotal > 0 
     ? ((recentExpenseTotal - previousExpenseTotal) / previousExpenseTotal) * 100 
     : 0;
@@ -61,6 +74,7 @@ export default function DashboardSummary() {
     name: item.category.charAt(0).toUpperCase() + item.category.slice(1)
   }));
 
+  // List of top categories for the sidebar
   const categoryList = formattedCategoryData.slice(0, 5).map((category, index) => (
     <div key={category.name} className="flex items-center justify-between py-2">
       <div className="flex items-center">

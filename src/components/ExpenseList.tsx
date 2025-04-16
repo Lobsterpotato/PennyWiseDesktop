@@ -1,4 +1,13 @@
 
+// Expense List Component
+// Displays a paginated table of expenses with sorting, filtering, and deletion capabilities
+// Technologies used:
+// - Shadcn UI Table component for data display
+// - React hooks for state management
+// - Tailwind CSS for styling
+// - Custom utility functions for data formatting
+// - Lucide React for icons
+
 import { useState } from "react";
 import { formatDate, formatCurrency } from "@/lib/expense-utils";
 import { useExpenses } from "@/context/ExpenseContext";
@@ -38,20 +47,25 @@ import {
 import { Badge } from "@/components/ui/badge";
 
 export default function ExpenseList() {
+  // Access expense data and methods from context
   const { filteredExpenses, deleteExpense } = useExpenses();
+  // State for pagination and delete confirmation
   const [currentPage, setCurrentPage] = useState(1);
   const [expenseToDelete, setExpenseToDelete] = useState<string | null>(null);
-  const pageSize = 10;
+  const pageSize = 10; // Number of items per page
 
+  // Calculate pagination values
   const startIndex = (currentPage - 1) * pageSize;
   const endIndex = startIndex + pageSize;
   const currentExpenses = filteredExpenses.slice(startIndex, endIndex);
   const totalPages = Math.ceil(filteredExpenses.length / pageSize);
 
+  // Set up expense for deletion
   const handleDelete = (id: string) => {
     setExpenseToDelete(id);
   };
 
+  // Confirm and execute deletion
   const confirmDelete = () => {
     if (expenseToDelete) {
       deleteExpense(expenseToDelete);
@@ -59,6 +73,7 @@ export default function ExpenseList() {
     }
   };
 
+  // Get color styling for different expense categories
   const getCategoryColor = (category: string): string => {
     const categoryColors: Record<string, string> = {
       food: "bg-expense-orange text-white",

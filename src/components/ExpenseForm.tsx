@@ -1,4 +1,12 @@
 
+// Expense Form Component
+// A form for adding new expenses with validation
+// Technologies used:
+// - React Hook Form for form handling and validation
+// - Zod for schema validation
+// - Shadcn UI components for UI elements
+// - date-fns for date formatting and manipulation
+
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -33,6 +41,7 @@ import {
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 
+// Available expense categories for the dropdown
 const categories: { value: ExpenseCategory; label: string }[] = [
   { value: "food", label: "Food & Dining" },
   { value: "housing", label: "Housing & Rent" },
@@ -46,6 +55,7 @@ const categories: { value: ExpenseCategory; label: string }[] = [
   { value: "other", label: "Other" },
 ];
 
+// Zod schema for form validation
 const formSchema = z.object({
   description: z.string().min(2, "Description must be at least 2 characters."),
   amount: z.coerce
@@ -67,12 +77,14 @@ const formSchema = z.object({
   date: z.date(),
 });
 
+// TypeScript type derived from the Zod schema
 type FormData = z.infer<typeof formSchema>;
 
 export default function ExpenseForm({ onSuccess }: { onSuccess?: () => void }) {
   const { addExpense } = useExpenses();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Initialize form with React Hook Form and Zod validation
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -83,10 +95,12 @@ export default function ExpenseForm({ onSuccess }: { onSuccess?: () => void }) {
     },
   });
 
+  // Form submission handler
   const onSubmit = async (data: FormData) => {
     setIsSubmitting(true);
     
     try {
+      // Add the expense via context
       addExpense({
         description: data.description,
         amount: Number(data.amount),
@@ -94,6 +108,7 @@ export default function ExpenseForm({ onSuccess }: { onSuccess?: () => void }) {
         date: data.date,
       });
       
+      // Reset form to default values
       form.reset({
         description: "",
         amount: undefined,
@@ -101,6 +116,7 @@ export default function ExpenseForm({ onSuccess }: { onSuccess?: () => void }) {
         date: new Date(),
       });
       
+      // Call success callback if provided
       if (onSuccess) {
         onSuccess();
       }

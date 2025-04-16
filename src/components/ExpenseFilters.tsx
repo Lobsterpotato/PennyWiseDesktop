@@ -1,4 +1,13 @@
 
+// Expense Filters Component
+// Provides UI for filtering expenses by various criteria
+// Technologies used:
+// - React Hook Form for form handling
+// - Zod for schema validation
+// - Shadcn UI components for the interface
+// - date-fns for date handling
+// - Tailwind CSS for styling
+
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -44,6 +53,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 
+// Available expense categories for filtering
 const categories: { value: ExpenseCategory; label: string }[] = [
   { value: "food", label: "Food & Dining" },
   { value: "housing", label: "Housing & Rent" },
@@ -57,6 +67,7 @@ const categories: { value: ExpenseCategory; label: string }[] = [
   { value: "other", label: "Other" },
 ];
 
+// Zod schema for filter form validation
 const formSchema = z.object({
   searchQuery: z.string().optional(),
   startDate: z.date().optional(),
@@ -69,11 +80,14 @@ const formSchema = z.object({
 type FormData = z.infer<typeof formSchema>;
 
 export default function ExpenseFilters() {
+  // Access filter state from context
   const { filters, setFilters, clearFilters } = useExpenses();
+  // Track selected categories
   const [selectedCategories, setSelectedCategories] = useState<string[]>(
     filters.categories as string[] || []
   );
   
+  // Initialize form with React Hook Form
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -86,6 +100,7 @@ export default function ExpenseFilters() {
     },
   });
 
+  // Form submission handler
   const onSubmit = (data: FormData) => {
     setFilters({
       searchQuery: data.searchQuery,
@@ -97,6 +112,7 @@ export default function ExpenseFilters() {
     });
   };
 
+  // Toggle category selection
   const handleCategoryToggle = (category: string) => {
     setSelectedCategories((prev) => {
       if (prev.includes(category)) {
@@ -107,6 +123,7 @@ export default function ExpenseFilters() {
     });
   };
 
+  // Reset all filters
   const handleClearFilters = () => {
     form.reset({
       searchQuery: "",

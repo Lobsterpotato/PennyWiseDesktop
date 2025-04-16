@@ -1,141 +1,150 @@
 
-import { CategoryTotal, Expense, ExpenseCategory, ExpenseFilters, MonthlyTotal } from "@/types";
+// Expense Utility Functions
+// A collection of helper functions for processing expense data
+// These utilities handle formatting, calculations, and data transformations
 
-// Calculate total expenses
-export const calculateTotalExpenses = (expenses: Expense[]): number => {
-  return expenses.reduce((total, expense) => total + expense.amount, 0);
-};
+import { clsx, type ClassValue } from "clsx"
+import { twMerge } from "tailwind-merge"
 
-// Filter expenses based on criteria
-export const filterExpenses = (expenses: Expense[], filters: ExpenseFilters): Expense[] => {
-  return expenses.filter(expense => {
-    // Filter by date range
-    if (filters.startDate && expense.date < filters.startDate) return false;
-    if (filters.endDate) {
-      const endDate = new Date(filters.endDate);
-      endDate.setHours(23, 59, 59, 999);
-      if (expense.date > endDate) return false;
-    }
+/**
+ * Utility function to merge Tailwind CSS classes
+ * Uses clsx and tailwind-merge for handling conditional classes
+ */
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
+}
 
-    // Filter by categories
-    if (filters.categories && filters.categories.length > 0) {
-      if (!filters.categories.includes(expense.category)) return false;
-    }
+/**
+ * Format a date to a readable string
+ * Example: Jan 15, 2023
+ */
+export function formatDate(date: Date): string {
+  return new Intl.DateTimeFormat('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric'
+  }).format(date);
+}
 
-    // Filter by amount range
-    if (filters.minAmount !== undefined && expense.amount < filters.minAmount) return false;
-    if (filters.maxAmount !== undefined && expense.amount > filters.maxAmount) return false;
-
-    // Filter by search query
-    if (filters.searchQuery) {
-      const query = filters.searchQuery.toLowerCase();
-      const matchesDescription = expense.description.toLowerCase().includes(query);
-      const matchesCategory = expense.category.toLowerCase().includes(query);
-      if (!matchesDescription && !matchesCategory) return false;
-    }
-
-    return true;
-  });
-};
-
-// Get expenses by category
-export const getExpensesByCategory = (expenses: Expense[]): CategoryTotal[] => {
-  const categoryTotals: Record<ExpenseCategory, number> = {
-    food: 0,
-    housing: 0,
-    transportation: 0,
-    utilities: 0,
-    entertainment: 0,
-    healthcare: 0,
-    education: 0,
-    shopping: 0,
-    personal: 0,
-    other: 0
-  };
-
-  expenses.forEach(expense => {
-    categoryTotals[expense.category] += expense.amount;
-  });
-
-  return Object.entries(categoryTotals)
-    .map(([category, amount]) => ({
-      category: category as ExpenseCategory,
-      amount
-    }))
-    .filter(item => item.amount > 0)
-    .sort((a, b) => b.amount - a.amount);
-};
-
-// Get monthly totals
-export const getMonthlyTotals = (expenses: Expense[]): MonthlyTotal[] => {
-  const monthlyData: Record<string, number> = {};
-
-  expenses.forEach(expense => {
-    const date = expense.date;
-    const month = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-    
-    if (!monthlyData[month]) {
-      monthlyData[month] = 0;
-    }
-    
-    monthlyData[month] += expense.amount;
-  });
-
-  return Object.entries(monthlyData)
-    .map(([month, amount]) => ({ month, amount }))
-    .sort((a, b) => a.month.localeCompare(b.month));
-};
-
-// Format currency
-export const formatCurrency = (amount: number): string => {
+/**
+ * Format a number as currency
+ * Example: $1,234.56
+ */
+export function formatCurrency(amount: number): string {
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
     minimumFractionDigits: 2
   }).format(amount);
-};
+}
 
-// Format date
-export const formatDate = (date: Date): string => {
-  return new Intl.DateTimeFormat('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric'
-  }).format(date);
-};
+/**
+ * Calculate total expenses from an array of expenses
+ */
+export function calculateTotalExpenses(expenses: any[]): number {
+  return expenses.reduce((total, expense) => total + expense.amount, 0);
+}
 
-// Get category color
-export const getCategoryColor = (category: ExpenseCategory): string => {
-  const colors: Record<ExpenseCategory, string> = {
-    food: 'expense-orange',
-    housing: 'expense-blue',
-    transportation: 'expense-green',
-    utilities: 'expense-purple',
-    entertainment: 'expense-pink',
-    healthcare: 'expense-red',
-    education: 'expense-yellow',
-    shopping: 'expense-blue',
-    personal: 'expense-green',
-    other: 'expense-purple'
-  };
+/**
+ * Group expenses by category and calculate totals
+ * Used for pie charts and category breakdowns
+ */
+export function getExpensesByCategory(expenses: any[]): any[] {
+  const categoryTotals: Record<string, number> = {};
   
-  return colors[category];
-};
-
-// Get category icon name
-export const getCategoryIcon = (category: ExpenseCategory): string => {
-  const icons: Record<ExpenseCategory, string> = {
-    food: 'utensils',
-    housing: 'home',
-    transportation: 'car',
-    utilities: 'zap',
-    entertainment: 'film',
-    healthcare: 'heart',
-    education: 'book',
-    shopping: 'shopping-bag',
-    personal: 'user',
-    other: 'box'
-  };
+  // Sum up amounts by category
+  expenses.forEach(expense => {
+    const { category, amount } = expense;
+    categoryTotals[category] = (categoryTotals[category] || 0) + amount;
+  });
   
-  return icons[category];
-};
+  // Convert to array format for charts
+  const result = Object.entries(categoryTotals).map(([category, amount]) => ({
+    category,
+    amount
+  }));
+  
+  // Sort by amount (highest first)
+  return result.sort((a, b) => b.amount - a.amount);
+}
+
+/**
+ * Group expenses by month and calculate totals
+ * Used for line charts and trend analysis
+ */
+export function getMonthlyTotals(expenses: any[]): any[] {
+  const monthlyTotals: Record<string, number> = {};
+  
+  // Group by year-month
+  expenses.forEach(expense => {
+    const { date, amount } = expense;
+    const yearMonth = `${date.getFullYear()}-${date.getMonth() + 1}`;
+    monthlyTotals[yearMonth] = (monthlyTotals[yearMonth] || 0) + amount;
+  });
+  
+  // Convert to array format for charts
+  const result = Object.entries(monthlyTotals).map(([month, amount]) => ({
+    month,
+    amount
+  }));
+  
+  // Sort chronologically
+  return result.sort((a, b) => {
+    const [aYear, aMonth] = a.month.split('-').map(Number);
+    const [bYear, bMonth] = b.month.split('-').map(Number);
+    
+    if (aYear !== bYear) return aYear - bYear;
+    return aMonth - bMonth;
+  });
+}
+
+/**
+ * Filter expenses based on provided criteria
+ * Handles search, date range, categories, and amount range
+ */
+export function filterExpenses(expenses: any[], filters: any = {}): any[] {
+  const { 
+    searchQuery, 
+    startDate, 
+    endDate, 
+    categories, 
+    minAmount, 
+    maxAmount 
+  } = filters;
+  
+  return expenses.filter(expense => {
+    // Text search filter
+    if (searchQuery && !expense.description.toLowerCase().includes(searchQuery.toLowerCase())) {
+      return false;
+    }
+    
+    // Date range filter
+    if (startDate && expense.date < startDate) {
+      return false;
+    }
+    
+    if (endDate) {
+      const endDateWithTime = new Date(endDate);
+      endDateWithTime.setHours(23, 59, 59, 999);
+      if (expense.date > endDateWithTime) {
+        return false;
+      }
+    }
+    
+    // Category filter
+    if (categories && categories.length > 0 && !categories.includes(expense.category)) {
+      return false;
+    }
+    
+    // Amount range filter
+    if (minAmount !== undefined && expense.amount < minAmount) {
+      return false;
+    }
+    
+    if (maxAmount !== undefined && expense.amount > maxAmount) {
+      return false;
+    }
+    
+    return true;
+  });
+}

@@ -1,4 +1,8 @@
 
+// Mock data generator for the expense tracker application
+// This file provides sample data for demonstration purposes
+// In a real application, this would be replaced with API calls to a backend
+
 import { Expense, ExpenseCategory } from "@/types";
 
 // Function to generate a random date within the last 3 months
@@ -128,4 +132,5 @@ export const generateDummyExpenses = (): Expense[] => {
   return expenses.sort((a, b) => b.date.getTime() - a.date.getTime());
 };
 
+// Export the dummy data for use in the application
 export const dummyExpenses = generateDummyExpenses();

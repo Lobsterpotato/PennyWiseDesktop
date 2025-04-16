@@ -1,10 +1,19 @@
 
+// Context provider for expense data management
+// This is the core state management for the application
+// Technologies used:
+// - React Context API for state management
+// - useState and useEffect hooks for reactive state updates
+// - Custom hooks for accessing context data
+// - Shadcn UI toast notifications
+
 import React, { createContext, useContext, useState, ReactNode, useEffect } from "react";
 import { Expense, ExpenseCategory, ExpenseFilters } from "@/types";
 import { dummyExpenses } from "@/data/dummy-data";
 import { filterExpenses } from "@/lib/expense-utils";
 import { useToast } from "@/hooks/use-toast";
 
+// Define the context shape with all available methods and state
 interface ExpenseContextType {
   expenses: Expense[];
   filteredExpenses: Expense[];
@@ -16,20 +25,22 @@ interface ExpenseContextType {
   clearFilters: () => void;
 }
 
+// Create the context
 const ExpenseContext = createContext<ExpenseContextType | undefined>(undefined);
 
 export const ExpenseProvider = ({ children }: { children: ReactNode }) => {
+  // Initialize with dummy data for demo purposes
   const [expenses, setExpenses] = useState<Expense[]>(dummyExpenses);
   const [filteredExpenses, setFilteredExpenses] = useState<Expense[]>(dummyExpenses);
   const [filters, setFilters] = useState<ExpenseFilters>({});
   const { toast } = useToast();
 
-  // Generate a unique ID
+  // Generate a unique ID for new expenses
   const generateId = (): string => {
     return `exp-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
   };
 
-  // Filter expenses whenever filters or expenses change
+  // Apply filters whenever expenses or filters change
   useEffect(() => {
     setFilteredExpenses(filterExpenses(expenses, filters));
   }, [expenses, filters]);
@@ -43,6 +54,7 @@ export const ExpenseProvider = ({ children }: { children: ReactNode }) => {
 
     setExpenses(prevExpenses => [newExpense, ...prevExpenses]);
     
+    // Show success notification
     toast({
       title: "Expense Added",
       description: `$${expenseData.amount} for ${expenseData.description}`
@@ -89,6 +101,7 @@ export const ExpenseProvider = ({ children }: { children: ReactNode }) => {
     setFilters({});
   };
 
+  // Provide all the expense data and functions to components
   return (
     <ExpenseContext.Provider
       value={{
@@ -107,6 +120,7 @@ export const ExpenseProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
+// Custom hook to access the expense context
 export const useExpenses = () => {
   const context = useContext(ExpenseContext);
   if (context === undefined) {

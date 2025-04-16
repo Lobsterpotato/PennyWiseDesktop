@@ -1,4 +1,11 @@
 
+// Main layout component that provides the app's structure
+// Features:
+// - Responsive sidebar navigation for desktop
+// - Mobile bottom navigation bar
+// - Uses Lucide React for icons
+// - Tailwind CSS for styling and responsive design
+
 import { ReactNode } from "react";
 import { CircleDollarSign, Home, PieChart, Users } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
@@ -9,8 +16,10 @@ interface LayoutProps {
 }
 
 export default function Layout({ children }: LayoutProps) {
+  // Get current route to highlight active navigation items
   const location = useLocation();
   
+  // Navigation items used in both sidebar and mobile navigation
   const mainNavItems = [
     {
       title: "Dashboard",
@@ -36,7 +45,7 @@ export default function Layout({ children }: LayoutProps) {
 
   return (
     <div className="flex min-h-screen">
-      {/* Sidebar */}
+      {/* Desktop Sidebar - hidden on mobile */}
       <div className="hidden md:flex flex-col bg-sidebar w-64 p-4 text-sidebar-foreground">
         <div className="flex items-center gap-2 py-4 px-2 mb-6">
           <CircleDollarSign className="h-6 w-6 text-primary" />
@@ -62,7 +71,7 @@ export default function Layout({ children }: LayoutProps) {
         </nav>
       </div>
 
-      {/* Mobile navbar */}
+      {/* Mobile bottom navigation - visible only on mobile */}
       <div className="fixed bottom-0 left-0 z-50 w-full h-16 bg-white border-t border-gray-200 md:hidden">
         <div className="grid h-full grid-cols-4">
           {mainNavItems.map((item) => (
@@ -83,7 +92,7 @@ export default function Layout({ children }: LayoutProps) {
         </div>
       </div>
 
-      {/* Main content */}
+      {/* Main content area */}
       <div className="flex-1 overflow-y-auto pb-16 md:pb-0">
         <main className="container max-w-screen-xl mx-auto py-6 px-4 md:px-6 lg:px-8">
           {children}
