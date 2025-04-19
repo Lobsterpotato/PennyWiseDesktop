@@ -1,0 +1,9 @@
+
+{
+  "appId": "app.lovable.expensetracker",
+  "appName": "ExpenseTracker",
+  "server": {
+    "url": "",
+    "cleartext": true
+  }
+}
