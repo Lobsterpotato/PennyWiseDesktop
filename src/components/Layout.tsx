@@ -1,11 +1,3 @@
-
-// Main layout component that provides the app's structure
-// Features:
-// - Responsive sidebar navigation for desktop
-// - Mobile bottom navigation bar
-// - Uses Lucide React for icons
-// - Tailwind CSS for styling and responsive design
-
 import { ReactNode } from "react";
 import { CircleDollarSign, Home, PieChart, Users, LogOut, User, Shield } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
@@ -45,6 +37,11 @@ export default function Layout({ children }: LayoutProps) {
       title: "Add Expense",
       href: "/add",
       icon: <CircleDollarSign className="h-5 w-5" />,
+    },
+    {
+      title: "Manage Budgets",
+      href: "/budget",
+      icon: <PieChart className="h-5 w-5" />,
     },
     {
       title: "Reports",

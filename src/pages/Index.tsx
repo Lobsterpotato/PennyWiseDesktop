@@ -4,8 +4,6 @@ import Layout from "@/components/Layout";
 import DashboardSummary from "@/components/DashboardSummary";
 import ExpenseFilters from "@/components/ExpenseFilters";
 import ExpenseList from "@/components/ExpenseList";
-import BudgetForm from "@/components/BudgetForm";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function Dashboard() {
   return (
@@ -18,16 +16,6 @@ export default function Dashboard() {
               Track and manage your expenses
             </p>
           </div>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Set Monthly Budget</CardTitle>
-              <CardDescription>Define budget limits for each category</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <BudgetForm />
-            </CardContent>
-          </Card>
 
           <DashboardSummary />
           
