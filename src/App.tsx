@@ -1,3 +1,4 @@
+
 // Main App component that sets up the application structure
 // Technologies used:
 // - React Router for navigation
@@ -19,6 +20,7 @@ import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import AdminPanel from "./pages/AdminPanel";
+import BudgetPage from "./pages/Budget"; // Import BudgetPage component
 import ProtectedRoute from "./components/ProtectedRoute";
 import { BudgetProvider } from "@/context/BudgetContext";
 
@@ -45,7 +47,7 @@ const App = () => (
               {/* Protected routes */}
               <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
               <Route path="/add" element={<ProtectedRoute><AddExpense /></ProtectedRoute>} />
-              <Route path="/budget" element={<ProtectedRoute><Budget /></ProtectedRoute>} />
+              <Route path="/budget" element={<ProtectedRoute><BudgetPage /></ProtectedRoute>} />
               <Route path="/reports" element={<ProtectedRoute><Reports /></ProtectedRoute>} />
               <Route path="/accountants" element={<ProtectedRoute><Accountants /></ProtectedRoute>} />
               <Route path="/admin" element={<ProtectedRoute><AdminPanel /></ProtectedRoute>} />

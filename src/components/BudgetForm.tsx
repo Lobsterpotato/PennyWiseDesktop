@@ -10,13 +10,20 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Button } from "@/components/ui/button";
 import { useBudgets } from "@/context/BudgetContext";
 
+// Define form schema with validation
 const formSchema = z.object({
   category: z.string(),
-  amount: z.string().transform(val => Number(val)),
+  // Parse string to number for amount field
+  amount: z.string().transform(val => parseFloat(val) || 0),
   month: z.string(),
 });
 
-export default function BudgetForm() {
+// Define props interface with optional onSuccess callback
+interface BudgetFormProps {
+  onSuccess?: () => void;
+}
+
+export default function BudgetForm({ onSuccess }: BudgetFormProps) {
   const { addBudget } = useBudgets();
   const currentDate = new Date();
   const currentMonth = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}`;
@@ -37,6 +44,11 @@ export default function BudgetForm() {
       month: values.month,
     });
     form.reset();
+    
+    // Call onSuccess callback if provided
+    if (onSuccess) {
+      onSuccess();
+    }
   };
 
   const categories: ExpenseCategory[] = [
