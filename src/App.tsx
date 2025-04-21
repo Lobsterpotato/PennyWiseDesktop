@@ -1,4 +1,3 @@
-
 // Main App component that sets up the application structure
 // Technologies used:
 // - React Router for navigation
@@ -21,6 +20,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import AdminPanel from "./pages/AdminPanel";
 import ProtectedRoute from "./components/ProtectedRoute";
+import { BudgetProvider } from "@/context/BudgetContext";
 
 // Create a new React Query client for data fetching
 const queryClient = new QueryClient();
@@ -36,21 +36,23 @@ const App = () => (
       {/* BrowserRouter sets up client-side routing */}
       <BrowserRouter>
         <AuthProvider>
-          <Routes>
-            {/* Authentication routes */}
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-            
-            {/* Protected routes */}
-            <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
-            <Route path="/add" element={<ProtectedRoute><AddExpense /></ProtectedRoute>} />
-            <Route path="/reports" element={<ProtectedRoute><Reports /></ProtectedRoute>} />
-            <Route path="/accountants" element={<ProtectedRoute><Accountants /></ProtectedRoute>} />
-            <Route path="/admin" element={<ProtectedRoute><AdminPanel /></ProtectedRoute>} />
-            
-            {/* Catch-all route for 404 errors */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+          <BudgetProvider>
+            <Routes>
+              {/* Authentication routes */}
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
+              
+              {/* Protected routes */}
+              <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
+              <Route path="/add" element={<ProtectedRoute><AddExpense /></ProtectedRoute>} />
+              <Route path="/reports" element={<ProtectedRoute><Reports /></ProtectedRoute>} />
+              <Route path="/accountants" element={<ProtectedRoute><Accountants /></ProtectedRoute>} />
+              <Route path="/admin" element={<ProtectedRoute><AdminPanel /></ProtectedRoute>} />
+              
+              {/* Catch-all route for 404 errors */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BudgetProvider>
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>

@@ -1,19 +1,14 @@
 
-// Dashboard/Home page component
-// This is the main landing page of the application that displays:
-// - Summary metrics and charts
-// - Expense list with filtering options
-// - Built with React and various components
-
 import { ExpenseProvider } from "@/context/ExpenseContext";
 import Layout from "@/components/Layout";
 import DashboardSummary from "@/components/DashboardSummary";
 import ExpenseFilters from "@/components/ExpenseFilters";
 import ExpenseList from "@/components/ExpenseList";
+import BudgetForm from "@/components/BudgetForm";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function Dashboard() {
   return (
-    // ExpenseProvider makes expense data available to all child components
     <ExpenseProvider>
       <Layout>
         <div className="space-y-8">
@@ -24,13 +19,20 @@ export default function Dashboard() {
             </p>
           </div>
 
-          {/* Dashboard summary with charts and key metrics */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Set Monthly Budget</CardTitle>
+              <CardDescription>Define budget limits for each category</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <BudgetForm />
+            </CardContent>
+          </Card>
+
           <DashboardSummary />
           
           <div>
-            {/* Filter controls for expenses */}
             <ExpenseFilters />
-            {/* Tabular list of expenses */}
             <ExpenseList />
           </div>
         </div>

@@ -1,4 +1,3 @@
-
 // TypeScript type definitions for the application
 // This file contains all the core data models used throughout the app
 
@@ -23,6 +22,14 @@ export type ExpenseCategory =
   | "shopping" 
   | "personal" 
   | "other";
+
+// Budget type definition
+export type Budget = {
+  id: string;
+  category: ExpenseCategory;
+  amount: number;
+  month: string; // Format: 'YYYY-MM'
+};
 
 // Type for monthly summary data (used in charts)
 export type MonthlyTotal = {
