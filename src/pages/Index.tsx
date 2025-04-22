@@ -4,6 +4,7 @@ import Layout from "@/components/Layout";
 import DashboardSummary from "@/components/DashboardSummary";
 import ExpenseFilters from "@/components/ExpenseFilters";
 import ExpenseList from "@/components/ExpenseList";
+import BudgetDisplay from "@/components/BudgetDisplay";
 
 export default function Dashboard() {
   return (
@@ -19,9 +20,11 @@ export default function Dashboard() {
 
           <DashboardSummary />
           
-          <div>
-            <ExpenseFilters />
+          <ExpenseFilters />
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <ExpenseList />
+            <BudgetDisplay />
           </div>
         </div>
       </Layout>
