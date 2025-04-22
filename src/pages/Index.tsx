@@ -5,8 +5,12 @@ import DashboardSummary from "@/components/DashboardSummary";
 import ExpenseFilters from "@/components/ExpenseFilters";
 import ExpenseList from "@/components/ExpenseList";
 import BudgetDisplay from "@/components/BudgetDisplay";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
 
 export default function Dashboard() {
+  const [activeView, setActiveView] = useState<'expenses' | 'budget'>('expenses');
+
   return (
     <ExpenseProvider>
       <Layout>
@@ -22,9 +26,27 @@ export default function Dashboard() {
           
           <ExpenseFilters />
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <ExpenseList />
-            <BudgetDisplay />
+          <div className="space-y-4">
+            <div className="flex gap-4">
+              <Button 
+                variant={activeView === 'expenses' ? 'default' : 'outline'}
+                onClick={() => setActiveView('expenses')}
+              >
+                Expenses
+              </Button>
+              <Button 
+                variant={activeView === 'budget' ? 'default' : 'outline'}
+                onClick={() => setActiveView('budget')}
+              >
+                Budget
+              </Button>
+            </div>
+
+            {activeView === 'expenses' ? (
+              <ExpenseList />
+            ) : (
+              <BudgetDisplay />
+            )}
           </div>
         </div>
       </Layout>
