@@ -3,6 +3,40 @@ import React, { createContext, useContext, useState, ReactNode } from "react";
 import { Budget, ExpenseCategory } from "@/types";
 import { useToast } from "@/hooks/use-toast";
 
+// Add mock budgets for demonstration
+const initialBudgets: Budget[] = [
+  {
+    id: "budget-1",
+    category: "food",
+    amount: 500,
+    month: new Date().toISOString().slice(0, 7) // Current month
+  },
+  {
+    id: "budget-2",
+    category: "transportation",
+    amount: 300,
+    month: new Date().toISOString().slice(0, 7)
+  },
+  {
+    id: "budget-3",
+    category: "entertainment",
+    amount: 200,
+    month: new Date().toISOString().slice(0, 7)
+  },
+  {
+    id: "budget-4",
+    category: "shopping",
+    amount: 400,
+    month: new Date().toISOString().slice(0, 7)
+  },
+  {
+    id: "budget-5",
+    category: "utilities",
+    amount: 250,
+    month: new Date().toISOString().slice(0, 7)
+  }
+];
+
 interface BudgetContextType {
   budgets: Budget[];
   addBudget: (budget: Omit<Budget, "id">) => void;
@@ -14,7 +48,7 @@ interface BudgetContextType {
 const BudgetContext = createContext<BudgetContextType | undefined>(undefined);
 
 export const BudgetProvider = ({ children }: { children: ReactNode }) => {
-  const [budgets, setBudgets] = useState<Budget[]>([]);
+  const [budgets, setBudgets] = useState<Budget[]>(initialBudgets);
   const { toast } = useToast();
 
   const generateId = (): string => {
