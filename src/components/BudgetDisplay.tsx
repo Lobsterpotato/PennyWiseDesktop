@@ -1,17 +1,19 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useBudgets } from "@/context/BudgetContext";
 import { useExpenses } from "@/context/ExpenseContext";
+import { useToast } from "@/hooks/use-toast";
 import { Progress } from "@/components/ui/progress";
-import { Toggle } from "@/components/ui/toggle";
-import { formatCurrency } from "@/lib/expense-utils";
 import { Button } from "@/components/ui/button";
 import { ToggleLeft, ToggleRight } from "lucide-react";
+import { formatCurrency } from "@/lib/expense-utils";
 
 export default function BudgetDisplay() {
   const { budgets } = useBudgets();
   const { filteredExpenses } = useExpenses();
+  const { toast } = useToast();
   const [showPercentages, setShowPercentages] = useState(true);
+  const [shownAlerts, setShownAlerts] = useState<Set<string>>(new Set());
 
   // Calculate total expenses per category
   const expensesByCategory = filteredExpenses.reduce((acc, expense) => {
@@ -21,6 +23,43 @@ export default function BudgetDisplay() {
 
   // Get current month in YYYY-MM format
   const currentMonth = new Date().toISOString().slice(0, 7);
+
+  // Check budget thresholds and show alerts
+  const checkBudgetThresholds = (budget: Budget, spent: number) => {
+    const percentage = (spent / budget.amount) * 100;
+    const alertKey = `${budget.id}-${percentage >= 100 ? '100' : percentage >= 75 ? '75' : '50'}`;
+
+    if (percentage >= 100 && !shownAlerts.has(alertKey)) {
+      toast({
+        title: "Budget Exceeded!",
+        description: `You've exceeded your ${budget.category} budget of ${formatCurrency(budget.amount)}`,
+        variant: "destructive",
+      });
+      setShownAlerts(prev => new Set(prev).add(alertKey));
+    } else if (percentage >= 75 && !shownAlerts.has(alertKey)) {
+      toast({
+        title: "Budget Warning",
+        description: `You've used 75% of your ${budget.category} budget`,
+      });
+      setShownAlerts(prev => new Set(prev).add(alertKey));
+    } else if (percentage >= 50 && !shownAlerts.has(alertKey)) {
+      toast({
+        title: "Budget Notice",
+        description: `You've used 50% of your ${budget.category} budget`,
+      });
+      setShownAlerts(prev => new Set(prev).add(alertKey));
+    }
+  };
+
+  // Check thresholds when expenses or budgets change
+  useEffect(() => {
+    budgets
+      .filter(budget => budget.month === currentMonth)
+      .forEach(budget => {
+        const spent = expensesByCategory[budget.category] || 0;
+        checkBudgetThresholds(budget, spent);
+      });
+  }, [budgets, expensesByCategory]);
 
   return (
     <div className="bg-white rounded-lg shadow-sm">
@@ -58,7 +97,15 @@ export default function BudgetDisplay() {
                 </div>
                 <Progress 
                   value={percentage} 
-                  className={percentage > 100 ? "bg-red-200" : ""}
+                  className={`${
+                    percentage >= 100 
+                      ? "bg-red-200" 
+                      : percentage >= 75 
+                      ? "bg-yellow-200" 
+                      : percentage >= 50 
+                      ? "bg-blue-200" 
+                      : ""
+                  }`}
                 />
               </div>
             );
